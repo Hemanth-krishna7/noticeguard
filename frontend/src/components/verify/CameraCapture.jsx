@@ -20,6 +20,7 @@ export function CameraCapture({ onImageSelected, onSwitchToUpload }) {
   const [cameraState, setCameraState] = useState('initializing'); // 'initializing' | 'active' | 'denied' | 'unsupported' | 'error'
   const [errorMessage, setErrorMessage] = useState('');
   const [isCapturing, setIsCapturing] = useState(false);
+  const [stream, setStream] = useState(null);
 
   // Stop camera tracks helper
   const stopCameraStream = useCallback(() => {
@@ -33,6 +34,10 @@ export function CameraCapture({ onImageSelected, onSwitchToUpload }) {
       });
       streamRef.current = null;
     }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    setStream(null);
   }, []);
 
   // Initialize camera stream
@@ -48,9 +53,9 @@ export function CameraCapture({ onImageSelected, onSwitchToUpload }) {
     }
 
     try {
-      let stream = null;
+      let mediaStream = null;
       try {
-        stream = await navigator.mediaDevices.getUserMedia({
+        mediaStream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: { ideal: 'environment' },
             width: { ideal: 1920 },
@@ -59,21 +64,29 @@ export function CameraCapture({ onImageSelected, onSwitchToUpload }) {
           audio: false
         });
       } catch {
-        stream = await navigator.mediaDevices.getUserMedia({
+        mediaStream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: false
         });
       }
 
-      streamRef.current = stream;
+      streamRef.current = mediaStream;
+      setStream(mediaStream);
 
+      // Immediate attachment if videoRef is already populated
       if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current.play()
+        const video = videoRef.current;
+        video.srcObject = mediaStream;
+        const handleLoaded = () => {
+          video.play()
             .then(() => setCameraState('active'))
             .catch(() => setCameraState('active'));
         };
+        if (video.readyState >= 2) {
+          handleLoaded();
+        } else {
+          video.onloadedmetadata = handleLoaded;
+        }
       }
     } catch (err) {
       if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
@@ -88,6 +101,25 @@ export function CameraCapture({ onImageSelected, onSwitchToUpload }) {
       }
     }
   }, [stopCameraStream]);
+
+  // Robust stream attachment to videoRef whenever stream changes or mounts
+  useEffect(() => {
+    if (!stream || !videoRef.current) return;
+    const video = videoRef.current;
+    if (video.srcObject !== stream) {
+      video.srcObject = stream;
+    }
+    const handleLoaded = () => {
+      video.play()
+        .then(() => setCameraState('active'))
+        .catch(() => setCameraState('active'));
+    };
+    if (video.readyState >= 2) {
+      handleLoaded();
+    } else {
+      video.onloadedmetadata = handleLoaded;
+    }
+  }, [stream]);
 
   // Start on mount, stop on unmount
   useEffect(() => {
@@ -175,16 +207,16 @@ export function CameraCapture({ onImageSelected, onSwitchToUpload }) {
 
       {/* Main Viewfinder Frame */}
       <div className="relative rounded-3xl bg-stone-900 text-white overflow-hidden shadow-2xl border-4 border-stone-800 aspect-[9/16] sm:aspect-[3/4] flex flex-col justify-between p-4 sm:p-5 select-none">
-        {/* Live Video Feed or Fallback State */}
-        {cameraState === 'active' && (
-          <video
-            ref={videoRef}
-            playsInline
-            muted
-            autoPlay
-            className="absolute inset-0 w-full h-full object-cover z-0"
-          />
-        )}
+        {/* Live Video Feed - Always mounted while viewfinder is active */}
+        <video
+          ref={videoRef}
+          playsInline
+          muted
+          autoPlay
+          className={`absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-300 ${
+            cameraState === 'active' ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+        />
 
         {/* Top Status Bar */}
         <div className="relative z-10 flex items-center justify-between">
