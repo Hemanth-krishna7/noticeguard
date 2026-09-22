@@ -1,21 +1,71 @@
 import { noticeService } from './notice.service.js';
+import { ocrService } from './ocr.service.js';
+import { normalizeText } from '../utils/textNormalizer.js';
+import { matcherService } from './matcher.service.js';
 
 /**
  * Verification Service
  * Evaluates submitted notice images against authoritative registry records.
- * In this prototype milestone, uses a deterministic matcher to identify prepared demo notices.
+ * 
+ * Supports two operational pathways:
+ * 1. Real Image Verification (Milestone 6): Image Buffer -> OCR -> Text Normalization -> Deterministic Registry Matching
+ * 2. Evaluator Demo Presets: Instant deterministic shortcut triggered solely when demoNoticeTag is explicitly provided.
  */
 class VerificationService {
   /**
    * Evaluates an image submission against the authoritative notice registry
    * @param {Object} input
+   * @param {Buffer} [input.fileBuffer] - In-memory image buffer (from multipart/form-data upload)
    * @param {string} [input.imageName] - Name or path of the uploaded file
-   * @param {string} [input.demoNoticeTag] - Explicit demo tag or preset key
+   * @param {string} [input.demoNoticeTag] - Explicit demo tag or preset key (used ONLY for presets)
    * @param {string} [input.source] - 'camera' | 'gallery' | 'upload'
-   * @returns {Object} Structured verification response
+   * @returns {Promise<Object>} Structured verification response
    */
-  verifyNotice(input = {}) {
-    const { imageName = '', demoNoticeTag = '', source = 'upload' } = input;
+  async verifyNotice(input = {}) {
+    const { fileBuffer, imageName = '', demoNoticeTag = '', source = 'upload' } = input;
+
+    // PATHWAY 1: Explicit Evaluator Demo Presets (Instant shortcut)
+    if (demoNoticeTag && demoNoticeTag.trim() !== '') {
+      return this.matchDemoPreset(demoNoticeTag, imageName, source);
+    }
+
+    // PATHWAY 2: Real Image Verification via OCR -> Registry Matcher
+    if (fileBuffer && Buffer.isBuffer(fileBuffer) && fileBuffer.length > 0) {
+      console.log(`[VerificationService] Processing real image verification (${fileBuffer.length} bytes, source: ${source})...`);
+      const ocrResult = await ocrService.extractText(fileBuffer);
+      console.log(`[VerificationService] OCR extracted ${ocrResult.text.length} characters (confidence: ${ocrResult.confidence}%).`);
+
+      const normalizedText = normalizeText(ocrResult.text);
+      const matchResult = matcherService.matchAgainstRegistry(normalizedText, {
+        rawOcrText: ocrResult.text,
+        ocrConfidence: ocrResult.confidence,
+        source
+      });
+
+      return matchResult;
+    }
+
+    // PATHWAY 3: No Image & No Demo Preset provided
+    return {
+      success: true,
+      matched: false,
+      status: 'UNVERIFIED',
+      confidence: 'NO_IMAGE_DATA',
+      source,
+      message: 'NoticeGuard could not confidently match this image to an authoritative notice in the current prototype registry.',
+      notice: null,
+      identifiedVersion: null,
+      currentVersion: null,
+      changes: [],
+      guidance: 'Ensure all edges of the notice header and reference code are clearly visible, or check directly with the issuing department.'
+    };
+  }
+
+  /**
+   * Deterministic evaluator preset matcher (Preserved from Milestone 4 & 5)
+   * @private
+   */
+  matchDemoPreset(demoNoticeTag, imageName, source) {
     const nameLower = imageName.toLowerCase();
     const tagLower = demoNoticeTag.toLowerCase();
 

@@ -5,12 +5,14 @@ import { verificationService } from '../services/verification.service.js';
  */
 
 // POST /api/verify
-export const verifyNotice = (req, res) => {
+export const verifyNotice = async (req, res) => {
   try {
     const { imageName, demoNoticeTag, source } = req.body || {};
+    const fileBuffer = req.file?.buffer;
 
-    const result = verificationService.verifyNotice({
-      imageName,
+    const result = await verificationService.verifyNotice({
+      fileBuffer,
+      imageName: imageName || req.file?.originalname,
       demoNoticeTag,
       source
     });

@@ -1,6 +1,6 @@
 /**
  * Verification API Client
- * Sends normalized notice image information and demo tags to the verification engine.
+ * Sends notice image data (multipart/form-data) and demo tags to the verification engine.
  */
 
 const rawBaseUrl = import.meta.env.VITE_API_URL || '';
@@ -15,22 +15,31 @@ const API_BASE_URL = rawBaseUrl.replace(/\/$/, '');
  */
 export async function verifyNoticeImage(normalizedImage, options = {}) {
   try {
-    const payload = {
-      imageName: normalizedImage?.name || 'uploaded_notice.jpg',
-      demoNoticeTag: options.demoNoticeTag || normalizedImage?.demoNoticeTag || '',
-      source: normalizedImage?.source || 'upload',
-      sizeBytes: normalizedImage?.sizeBytes || 0,
-      width: normalizedImage?.width || 0,
-      height: normalizedImage?.height || 0
-    };
+    const formData = new FormData();
+
+    // 1. Attach actual image file/blob if available
+    if (normalizedImage?.file) {
+      formData.append('image', normalizedImage.file, normalizedImage.name || 'notice_image.jpg');
+    }
+
+    // 2. Demo notice tag (used exclusively for evaluator shortcut presets)
+    const demoNoticeTag = options.demoNoticeTag || normalizedImage?.demoNoticeTag || '';
+    if (demoNoticeTag) {
+      formData.append('demoNoticeTag', demoNoticeTag);
+    }
+
+    // 3. Metadata fields
+    formData.append('imageName', normalizedImage?.name || 'uploaded_notice.jpg');
+    formData.append('source', normalizedImage?.source || 'upload');
 
     const response = await fetch(`${API_BASE_URL}/api/verify`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        // NOTE: Do not set Content-Type header manually when sending FormData
+        // so the browser can attach the proper boundary multipart header.
         'Accept': 'application/json'
       },
-      body: JSON.stringify(payload)
+      body: formData
     });
 
     if (!response.ok) {
