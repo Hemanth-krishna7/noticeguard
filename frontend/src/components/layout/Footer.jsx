@@ -23,11 +23,6 @@ export function Footer({ onNavigate }) {
               Bridging the gap between official digital notices and the physical printed copies
               people read in the real world. Built with a commitment to verifiability and truth.
             </p>
-            <div className="pt-1">
-              <span className="inline-flex items-center text-[11px] font-medium text-stone-600 bg-stone-200/70 px-2.5 py-1 rounded">
-                Milestone 2 • Public Notice Input Experience
-              </span>
-            </div>
           </div>
 
           {/* Architecture Navigation */}
@@ -89,7 +84,7 @@ export function Footer({ onNavigate }) {
         <div className="pt-6 border-t border-stone-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-stone-500">
           <p>© {new Date().getFullYear()} NoticeGuard. Built for Hackathon Demonstration.</p>
           <p className="text-stone-400">
-            Current release: v0.1.0 • No fake verification • Real architectural scaffold
+            Current release: v0.1.0 • Deterministic Registry Verification • Production Prototype
           </p>
         </div>
       </div>

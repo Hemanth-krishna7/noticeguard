@@ -354,7 +354,7 @@ export function LandingPage({ onNavigate }) {
               </div>
               <div className="pt-2 text-[11px] text-emerald-800 font-medium flex items-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Safe to rely on this copy</span>
+                <span>Matches current authoritative record</span>
               </div>
             </Card>
 
@@ -363,7 +363,7 @@ export function LandingPage({ onNavigate }) {
               <div className="flex items-center justify-between">
                 <StatusBadge status="OUTDATED" size="md" />
                 <span className="text-[10px] uppercase font-mono text-amber-700 bg-amber-100/70 px-1.5 py-0.5 rounded">
-                  Superceded
+                  Superseded
                 </span>
               </div>
               <div>
@@ -371,7 +371,7 @@ export function LandingPage({ onNavigate }) {
                   Newer Version Exists
                 </h4>
                 <p className="text-stone-600 text-xs leading-relaxed">
-                  The notice was authentic when printed, but the organization has issued a subsequent official update or addendum.
+                  This notice corresponds to an older official version that has been superseded by a subsequent update or addendum.
                 </p>
               </div>
               <div className="pt-2 text-[11px] text-amber-800 font-medium flex items-center gap-1">
@@ -393,7 +393,7 @@ export function LandingPage({ onNavigate }) {
                   Content Altered
                 </h4>
                 <p className="text-stone-600 text-xs leading-relaxed">
-                  Discrepancies detected between the physical text and the digital record. Likely an unauthorized modification.
+                  Discrepancies detected between the physical text and the stored digital record. Critical details diverge from official files.
                 </p>
               </div>
               <div className="pt-2 text-[11px] text-rose-800 font-medium flex items-center gap-1">
@@ -415,7 +415,7 @@ export function LandingPage({ onNavigate }) {
                   Cannot Confirm
                 </h4>
                 <p className="text-stone-600 text-xs leading-relaxed">
-                  NoticeGuard cannot reliably index or match this notice. The system explicitly refuses to guess or invent an answer.
+                  NoticeGuard cannot reliably index or match this notice. The system does not guess when confidence is insufficient.
                 </p>
               </div>
               <div className="pt-2 text-[11px] text-stone-600 font-medium flex items-center gap-1">
@@ -553,7 +553,7 @@ export function LandingPage({ onNavigate }) {
             </p>
             <div className="bg-[#FAF8F5] border border-stone-200 rounded-xl p-5 text-left text-xs sm:text-sm text-stone-700 space-y-2.5">
               <p className="font-semibold text-stone-900">
-                NoticeGuard will never hallucinate verification:
+                NoticeGuard does not guess when a notice cannot be confidently matched:
               </p>
               <p className="text-stone-600">
                 • If lighting is too poor, text is obstructed, or the document does not exist in an authoritative registry, NoticeGuard clearly reports <strong className="text-stone-900">UNVERIFIED</strong>.

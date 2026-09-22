@@ -65,6 +65,19 @@ export function ImagePreview({
             alt="Captured Physical Notice Preview"
             className="w-full h-auto max-h-[480px] object-contain select-none"
           />
+          {isVerifying && (
+            <div className="absolute inset-0 bg-stone-950/60 backdrop-blur-[1px] flex flex-col items-center justify-center text-white space-y-3 p-4 animate-in fade-in duration-150">
+              <RefreshCw className="w-9 h-9 animate-spin text-amber-400" />
+              <div className="text-center space-y-1">
+                <span className="text-xs font-mono font-bold tracking-wider uppercase text-amber-300 block">
+                  Registry Inspection In Progress
+                </span>
+                <span className="text-[11px] text-stone-300 block max-w-xs">
+                  Evaluating document parameters against authoritative institutional records...
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Quality Check Advisory */}
@@ -86,6 +99,7 @@ export function ImagePreview({
               type="button"
               variant="outline"
               size="md"
+              disabled={isVerifying}
               onClick={onRetake}
               icon={RotateCcw}
               iconPosition="left"
@@ -97,6 +111,7 @@ export function ImagePreview({
               type="button"
               variant="ghost"
               size="md"
+              disabled={isVerifying}
               onClick={onRemove}
               icon={Trash2}
               iconPosition="left"
@@ -115,9 +130,10 @@ export function ImagePreview({
             onClick={onContinue}
             icon={isVerifying ? RefreshCw : ArrowRight}
             iconPosition={isVerifying ? 'left' : 'right'}
-            className={`w-full sm:w-auto font-semibold ${isVerifying ? 'opacity-80' : ''}`}
+            iconClassName={isVerifying ? 'animate-spin' : ''}
+            className={`w-full sm:w-auto font-semibold ${isVerifying ? 'opacity-90' : ''}`}
           >
-            {isVerifying ? 'Verifying Notice...' : 'Verify Notice'}
+            {isVerifying ? 'Verifying Document...' : 'Verify Notice'}
           </Button>
         </div>
       </Card>

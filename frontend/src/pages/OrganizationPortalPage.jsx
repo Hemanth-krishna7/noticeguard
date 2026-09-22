@@ -115,12 +115,13 @@ export function OrganizationPortalPage({ onNavigate }) {
 
           <div className="flex items-center gap-2">
             <Badge variant="stone" size="sm">
-              MILESTONE 3 • AUTHORITATIVE REGISTRY
+              OFFICIAL REGISTRY • AUTHORITATIVE SOURCE
             </Badge>
             <button
               type="button"
               onClick={loadRegistryData}
               title="Refresh Registry Data"
+              aria-label="Refresh Registry Data"
               className="p-1 rounded-md text-stone-500 hover:text-stone-900 hover:bg-stone-200/60 transition-colors cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-amber-600' : ''}`} />

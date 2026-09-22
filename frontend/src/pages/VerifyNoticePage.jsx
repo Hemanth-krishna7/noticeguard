@@ -18,7 +18,7 @@ import { verifyNoticeImage } from '../services/verificationApi';
 /**
  * Generate a visual synthetic document data URL for prototype demo presets
  */
-function createDemoNoticeDataUrl(title, subtitle, badgeText, statusColor) {
+function createDemoNoticeDataUrl(title, subtitle, badgeText, statusColor, customBodyLines) {
   const canvas = document.createElement('canvas');
   canvas.width = 1200;
   canvas.height = 1600;
@@ -44,36 +44,36 @@ function createDemoNoticeDataUrl(title, subtitle, badgeText, statusColor) {
 
   // Document Badge
   ctx.fillStyle = statusColor || '#D97706';
-  ctx.fillRect(canvas.width / 2 - 200, 210, 400, 48);
+  ctx.fillRect(canvas.width / 2 - 220, 210, 440, 48);
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 22px sans-serif';
+  ctx.font = 'bold 20px sans-serif';
   ctx.fillText(badgeText || 'PHYSICAL NOTICE COPY', canvas.width / 2, 242);
 
   // Headline Title
   ctx.fillStyle = '#1C1917';
-  ctx.font = 'bold 52px serif';
+  ctx.font = 'bold 46px serif';
   ctx.textAlign = 'center';
-  ctx.fillText(title, canvas.width / 2, 340);
+  ctx.fillText(title, canvas.width / 2, 335);
 
   // Subtitle / Reference
   ctx.fillStyle = '#57534E';
-  ctx.font = '28px monospace';
-  ctx.fillText(subtitle, canvas.width / 2, 400);
+  ctx.font = '24px monospace';
+  ctx.fillText(subtitle, canvas.width / 2, 390);
 
-  // Body Lines
+  // Divider Line
   ctx.strokeStyle = '#E7E5E4';
   ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(100, 450);
-  ctx.lineTo(canvas.width - 100, 450);
+  ctx.moveTo(100, 435);
+  ctx.lineTo(canvas.width - 100, 435);
   ctx.stroke();
 
-  // Simulated Document Paragraphs
+  // Document Body Paragraphs
   ctx.fillStyle = '#292524';
-  ctx.font = '32px serif';
+  ctx.font = '30px serif';
   ctx.textAlign = 'left';
 
-  const bodyLines = [
+  const bodyLines = customBodyLines || [
     'TO ALL CANDIDATES AND FACULTY MEMBERS:',
     '',
     'This physical circular is posted on the institutional bulletin board for',
@@ -87,24 +87,34 @@ function createDemoNoticeDataUrl(title, subtitle, badgeText, statusColor) {
     'NoticeGuard Physical-to-Digital Verification Protocol active.'
   ];
 
-  let y = 520;
+  let y = 500;
   for (const line of bodyLines) {
+    if (line.startsWith('•')) {
+      ctx.font = 'bold 29px sans-serif';
+      ctx.fillStyle = '#1C1917';
+    } else if (line.startsWith('OFFICIAL') || line.startsWith('ADDENDUM') || line.startsWith('UNOFFICIAL') || line.startsWith('ANNUAL')) {
+      ctx.font = 'bold 31px serif';
+      ctx.fillStyle = '#0C0A09';
+    } else {
+      ctx.font = '28px serif';
+      ctx.fillStyle = '#44403C';
+    }
     ctx.fillText(line, 120, y);
-    y += 50;
+    y += 52;
   }
 
   // Institutional Official Stamp
   ctx.save();
-  ctx.translate(canvas.width - 320, canvas.height - 300);
-  ctx.rotate(-0.1);
+  ctx.translate(canvas.width - 320, canvas.height - 280);
+  ctx.rotate(-0.08);
   ctx.strokeStyle = statusColor || '#D97706';
-  ctx.lineWidth = 6;
+  ctx.lineWidth = 5;
   ctx.strokeRect(-160, -60, 320, 120);
   ctx.fillStyle = statusColor || '#D97706';
-  ctx.font = 'bold 24px sans-serif';
+  ctx.font = 'bold 22px sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('AUTHORIZED POSTING', 0, -15);
-  ctx.font = '16px monospace';
+  ctx.font = '15px monospace';
   ctx.fillText('CAMPUS BULLETIN ARCHIVE', 0, 18);
   ctx.restore();
 
@@ -160,6 +170,7 @@ export function VerifyNoticePage({ onNavigate }) {
     let subtitle = '';
     let badgeText = '';
     let color = '';
+    let customBodyLines = [];
 
     if (presetKey === 'exam-v1') {
       name = 'exam_schedule_v1_notice_board.jpg';
@@ -168,6 +179,20 @@ export function VerifyNoticePage({ onNavigate }) {
       subtitle = 'REF: CCU-EXAM-2026-089-V1 • OCT 12 • HALL 302';
       badgeText = 'OUTDATED PHYSICAL NOTICE (OCT 12)';
       color = '#D97706';
+      customBodyLines = [
+        'OFFICIAL CIRCULAR: END SEMESTER EXAMINATION TIMETABLE',
+        '',
+        'To all undergraduate candidates and departmental faculty:',
+        'Examinations for the Autumn Term 2026 are scheduled as follows:',
+        '',
+        '• Examination Date: Monday, October 12, 2026',
+        '• Reporting Timing: 08:30 AM (Commences: 09:00 AM – 12:00 PM)',
+        '• Assigned Examination Venue: Hall 302, Main Academic Block',
+        '• Standard Published Timetable for all registered candidates',
+        '',
+        'Candidates must carry their Student ID card and Hall Pass.',
+        'Direct inquiries to the Office of the Controller of Examinations.'
+      ];
     } else if (presetKey === 'exam-v2') {
       name = 'exam_schedule_v2_current.jpg';
       demoNoticeTag = 'not-exam-2026-v2';
@@ -175,13 +200,40 @@ export function VerifyNoticePage({ onNavigate }) {
       subtitle = 'REF: CCU-EXAM-2026-089-R2 • OCT 15 • HALL 408';
       badgeText = 'CURRENT OFFICIAL REVISION (OCT 15)';
       color = '#059669';
+      customBodyLines = [
+        'ADDENDUM NOTIFICATION: REVISED EXAMINATION SCHEDULE',
+        '',
+        'Notice is hereby given that due to infrastructure upgrades in Main Block,',
+        'the schedule published in Circular 089 is amended as follows:',
+        '',
+        '• Rescheduled Date: Thursday, October 15, 2026',
+        '• Revised Timing: 10:00 AM (Commences: 10:30 AM – 01:30 PM)',
+        '• Relocated Venue: Hall 408, Science & Tech Annex Wing (2nd Floor)',
+        '• Revision Reason: Emergency electrical infrastructure upgrade',
+        '',
+        'This constitutes the active authoritative schedule for Autumn 2026.',
+        'Dr. Aris Thorne, Controller of Examinations'
+      ];
     } else if (presetKey === 'exam-modified') {
       name = 'exam_schedule_altered_flyer.jpg';
       demoNoticeTag = 'not-exam-modified';
       title = 'Exam Schedule (Unofficial Date)';
       subtitle = 'REF: CCU-EXAM-2026-UNOFFICIAL • OCT 22 • HALL 101';
-      badgeText = 'DISCREPANCY DETECTED';
+      badgeText = 'CONTENT DISCREPANCY DETECTED';
       color = '#DC2626';
+      customBodyLines = [
+        'UNOFFICIAL STUDENT CIRCULAR: SEMESTER TIMETABLE',
+        '',
+        'Attention all registered classes:',
+        'Please note alternate examination guidelines circulating on campus:',
+        '',
+        '• Stated Date: Thursday, October 22, 2026',
+        '• Stated Timing: 02:00 PM – 05:00 PM',
+        '• Stated Venue: Hall 101, Ground Floor Lecture Theater',
+        '',
+        'NoticeGuard registry check will detect content divergence against',
+        'the stored authoritative university records.'
+      ];
     } else {
       name = 'generic_campus_poster.png';
       demoNoticeTag = 'unregistered-poster';
@@ -189,9 +241,22 @@ export function VerifyNoticePage({ onNavigate }) {
       subtitle = 'REF: STUDENT-ACTIVITY-UNREGISTERED';
       badgeText = 'COMMUNITY BULLETIN (UNINDEXED)';
       color = '#64748B';
+      customBodyLines = [
+        'ANNUAL CAMPUS STUDENT ART & MUSIC SHOWCASE',
+        '',
+        'Presented by the Student Cultural Committee:',
+        'Join us for the autumn fine arts exhibition and live performances!',
+        '',
+        '• Event Date: Friday, November 06, 2026 at 05:00 PM',
+        '• Location: Student Activity Center Amphitheater',
+        '• Entry: Free for all students and visitors with campus pass',
+        '',
+        'This community activity notice is unindexed in the official',
+        'administrative registry. NoticeGuard does not guess answers.'
+      ];
     }
 
-    const dataUrl = createDemoNoticeDataUrl(title, subtitle, badgeText, color);
+    const dataUrl = createDemoNoticeDataUrl(title, subtitle, badgeText, color, customBodyLines);
 
     const mockNormalizedImage = {
       id: `demo_${Date.now()}`,
@@ -278,7 +343,7 @@ export function VerifyNoticePage({ onNavigate }) {
           </button>
 
           <Badge variant="accent" size="sm">
-            MILESTONE 4 • VERIFICATION ENGINE
+            PUBLIC VERIFICATION • OFFICIAL REGISTRY
           </Badge>
         </div>
 
@@ -292,26 +357,26 @@ export function VerifyNoticePage({ onNavigate }) {
               Capture or upload a photo of the printed notice to check whether it corresponds to the current authoritative digital version in the official registry.
             </p>
 
-            {/* Quick Demo Presets for Evaluators */}
-            <div className="pt-2 p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/90 text-left space-y-2">
-              <div className="flex items-center justify-between text-xs font-bold text-amber-950 uppercase tracking-wider">
-                <span className="flex items-center gap-1.5">
+            {/* Try a demo sample (Evaluator Shortcut) */}
+            <div className="pt-2 p-3.5 rounded-2xl bg-stone-100/80 border border-stone-200/90 text-left space-y-2">
+              <div className="flex items-center justify-between text-xs text-stone-700 font-medium">
+                <span className="flex items-center gap-1.5 font-semibold text-stone-900">
                   <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                  Quick Demo Notice Samples (1-Click Test)
+                  Try a demo sample
                 </span>
-                <span className="text-[10px] text-amber-800 font-normal">Prototype Matcher</span>
+                <span className="text-[11px] text-stone-500">Optional evaluator shortcuts</span>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-0.5">
                 <button
                   type="button"
                   onClick={() => handleLoadDemoPreset('exam-v1')}
-                  className="p-2 rounded-lg bg-white border border-amber-300 hover:border-amber-500 text-left transition-all cursor-pointer shadow-2xs group"
+                  className="p-2.5 rounded-xl bg-white border border-stone-200 hover:border-amber-400 text-left transition-all cursor-pointer shadow-2xs hover:shadow-xs group"
                 >
                   <span className="block text-[11px] font-bold text-amber-900 group-hover:text-amber-700">
                     Sample 1: Outdated
                   </span>
-                  <span className="text-[10px] text-stone-500 block leading-tight">
+                  <span className="text-[10px] text-stone-500 block leading-tight pt-0.5">
                     Exam Schedule v1 (Hall 302, Oct 12)
                   </span>
                 </button>
@@ -319,12 +384,12 @@ export function VerifyNoticePage({ onNavigate }) {
                 <button
                   type="button"
                   onClick={() => handleLoadDemoPreset('exam-v2')}
-                  className="p-2 rounded-lg bg-white border border-emerald-300 hover:border-emerald-500 text-left transition-all cursor-pointer shadow-2xs group"
+                  className="p-2.5 rounded-xl bg-white border border-stone-200 hover:border-emerald-500 text-left transition-all cursor-pointer shadow-2xs hover:shadow-xs group"
                 >
                   <span className="block text-[11px] font-bold text-emerald-900 group-hover:text-emerald-700">
                     Sample 2: Current
                   </span>
-                  <span className="text-[10px] text-stone-500 block leading-tight">
+                  <span className="text-[10px] text-stone-500 block leading-tight pt-0.5">
                     Exam Schedule v2 (Hall 408, Oct 15)
                   </span>
                 </button>
@@ -332,26 +397,26 @@ export function VerifyNoticePage({ onNavigate }) {
                 <button
                   type="button"
                   onClick={() => handleLoadDemoPreset('exam-modified')}
-                  className="p-2 rounded-lg bg-white border border-rose-300 hover:border-rose-500 text-left transition-all cursor-pointer shadow-2xs group"
+                  className="p-2.5 rounded-xl bg-white border border-stone-200 hover:border-rose-400 text-left transition-all cursor-pointer shadow-2xs hover:shadow-xs group"
                 >
                   <span className="block text-[11px] font-bold text-rose-900 group-hover:text-rose-700">
                     Sample 3: Modified
                   </span>
-                  <span className="text-[10px] text-stone-500 block leading-tight">
-                    Altered exam dates / discrepancy
+                  <span className="text-[10px] text-stone-500 block leading-tight pt-0.5">
+                    Altered flyer / discrepancy
                   </span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => handleLoadDemoPreset('unregistered')}
-                  className="p-2 rounded-lg bg-white border border-stone-300 hover:border-stone-500 text-left transition-all cursor-pointer shadow-2xs group"
+                  className="p-2.5 rounded-xl bg-white border border-stone-200 hover:border-stone-400 text-left transition-all cursor-pointer shadow-2xs hover:shadow-xs group"
                 >
                   <span className="block text-[11px] font-bold text-stone-800 group-hover:text-stone-600">
                     Sample 4: Unverified
                   </span>
-                  <span className="text-[10px] text-stone-500 block leading-tight">
-                    Unregistered community poster
+                  <span className="text-[10px] text-stone-500 block leading-tight pt-0.5">
+                    Unindexed community poster
                   </span>
                 </button>
               </div>

@@ -207,10 +207,10 @@ export function VerificationResultView({
 
           <div className="p-4 rounded-xl bg-emerald-50/50 border border-emerald-200 space-y-2 text-xs text-stone-700">
             <p className="font-semibold text-emerald-950 text-sm">
-              Safe to rely on this physical document
+              Matches the Current Authoritative Record
             </p>
             <p className="text-stone-600 leading-relaxed">
-              This physical notice exactly corresponds to the latest authoritative version maintained in the digital registry. No revisions or relocation addendums have been issued.
+              This physical notice corresponds to the current authoritative version maintained in the official registry. No subsequent amendments or relocations have been issued.
             </p>
           </div>
 
@@ -351,7 +351,7 @@ export function VerificationResultView({
 
           <div className="p-4 rounded-xl bg-stone-50 border border-stone-200 text-xs text-stone-700 space-y-2">
             <p className="font-semibold text-stone-900">
-              NoticeGuard refuses to hallucinate verification
+              NoticeGuard does not guess when a notice cannot be confidently matched
             </p>
             <p className="text-stone-600 leading-relaxed">
               {message || "In accordance with our trust principle, NoticeGuard does not guess answers when certainty is insufficient. The document may belong to an unindexed department or the image may lack clear reference markings."}
@@ -389,7 +389,7 @@ export function VerificationResultView({
 
       {/* Prototype Disclosure Note */}
       <div className="text-center text-[11px] text-stone-500">
-        NoticeGuard Prototype • Verification engine matched against active registry in Milestone 4
+        NoticeGuard Prototype • Verification matched against active authoritative registry
       </div>
 
       {/* ===================================================
@@ -409,6 +409,7 @@ export function VerificationResultView({
               <button
                 type="button"
                 onClick={() => setShowLatestNoticeModal(false)}
+                aria-label="Close official document modal"
                 className="p-1 rounded-lg text-stone-500 hover:text-stone-900 hover:bg-stone-200/60 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
@@ -462,7 +463,7 @@ export function VerificationResultView({
                     {currentVersion.signatory}
                   </p>
                   <p className="text-[11px] text-stone-500 font-sans">
-                    Authoritative Record • Certified by NoticeGuard Registry
+                    Authoritative Record • Maintained in Digital Registry
                   </p>
                 </div>
 

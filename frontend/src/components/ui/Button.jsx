@@ -10,6 +10,7 @@ export function Button({
   className = '',
   icon: Icon,
   iconPosition = 'left',
+  iconClassName = '',
   disabled = false,
   onClick,
   type = 'button',
@@ -39,9 +40,13 @@ export function Button({
       className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`}
       {...props}
     >
-      {Icon && iconPosition === 'left' && <Icon className="w-4 h-4 shrink-0" />}
+      {Icon && iconPosition === 'left' && (
+        <Icon className={`w-4 h-4 shrink-0 ${iconClassName}`} />
+      )}
       <span>{children}</span>
-      {Icon && iconPosition === 'right' && <Icon className="w-4 h-4 shrink-0" />}
+      {Icon && iconPosition === 'right' && (
+        <Icon className={`w-4 h-4 shrink-0 ${iconClassName}`} />
+      )}
     </button>
   );
 }
