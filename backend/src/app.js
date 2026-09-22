@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import healthRoutes from './routes/health.routes.js';
+import noticeRoutes from './routes/notice.routes.js';
+import registryRoutes from './routes/registry.routes.js';
 
 dotenv.config();
 
@@ -36,6 +38,8 @@ app.use((req, res, next) => {
 
 // Primary Routes
 app.use('/api/health', healthRoutes);
+app.use('/api/notices', noticeRoutes);
+app.use('/api/registry', registryRoutes);
 
 // 404 Handler
 app.use((req, res) => {

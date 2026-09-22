@@ -1,0 +1,103 @@
+[
+  {
+    "id": "not-exam-2026",
+    "title": "End Semester Examination Schedule & Venue Relocation",
+    "department": "Controller of Examinations",
+    "organization": "City Central University",
+    "description": "Official scheduling, reporting times, and hall assignments for Undergraduate and Postgraduate Fall examinations.",
+    "currentVersionId": "not-exam-2026-v2",
+    "createdAt": "2026-10-01T08:30:00.000Z",
+    "updatedAt": "2026-10-08T14:15:00.000Z",
+    "versions": [
+      {
+        "id": "not-exam-2026-v1",
+        "versionNumber": "v1",
+        "noticeId": "not-exam-2026",
+        "publishedAt": "2026-10-01T08:30:00.000Z",
+        "effectiveFrom": "2026-10-12T09:00:00.000Z",
+        "status": "ARCHIVED",
+        "changesSummary": "Initial publication of Fall 2026 examination schedule.",
+        "content": "NOTIFICATION NO. CCU/EXAM/2026/089\n\nAll registered students are hereby notified that the End Semester Examinations for Fall 2026 will commence on Monday, October 12, 2026.\n\nExamination Details:\n- Reporting Time: 08:30 AM\n- Examination Timing: 09:00 AM – 12:00 PM\n- Primary Examination Venue: Hall 302, Main Academic Block\n- Allowed Materials: Standard non-programmable calculator, black/blue pen, University Student ID Card.\n\nStudents without valid physical identity cards will not be permitted entry. Please verify hall seating charts posted outside Hall 302 on the morning of the exam.",
+        "signatory": "Dr. Aris Thorne, Controller of Examinations",
+        "documentRef": "CCU-EXAM-2026-089-V1",
+        "documentImage": "/documents/exam_schedule_v1.svg"
+      },
+      {
+        "id": "not-exam-2026-v2",
+        "versionNumber": "v2",
+        "noticeId": "not-exam-2026",
+        "publishedAt": "2026-10-08T14:15:00.000Z",
+        "effectiveFrom": "2026-10-15T10:30:00.000Z",
+        "status": "CURRENT",
+        "changesSummary": "Rescheduled examination date from Oct 12 to Oct 15 and relocated venue from Hall 302 to Hall 408 (Annex Wing) due to electrical maintenance in Main Academic Block.",
+        "content": "ADDENDUM / REVISED NOTIFICATION NO. CCU/EXAM/2026/089-R2\n\nATTENTION ALL STUDENTS: Due to unscheduled emergency electrical infrastructure upgrades in the Main Academic Block, the examination schedule published on Oct 01 has been officially revised.\n\nRevised Examination Details:\n- Revised Date: Thursday, October 15, 2026 (Postponed from Oct 12)\n- Reporting Time: 10:00 AM\n- Examination Timing: 10:30 AM – 01:30 PM\n- Relocated Venue: Hall 408, Science & Technology Annex Wing (2nd Floor)\n\nStudents must report to Hall 408. Notice posted in Hall 302 is no longer valid. Seating allocations remain identical to the published roll-number registry.",
+        "signatory": "Dr. Aris Thorne, Controller of Examinations",
+        "documentRef": "CCU-EXAM-2026-089-V2",
+        "documentImage": "/documents/exam_schedule_v2.svg"
+      }
+    ]
+  },
+  {
+    "id": "not-lib-2026",
+    "title": "Central Library Extended Reading Room Hours",
+    "department": "Library & Information Services",
+    "organization": "City Central University",
+    "description": "Operational hours, quiet study zones, and digital archive access during the examination preparation period.",
+    "currentVersionId": "not-lib-2026-v2",
+    "createdAt": "2026-09-01T09:00:00.000Z",
+    "updatedAt": "2026-10-02T11:00:00.000Z",
+    "versions": [
+      {
+        "id": "not-lib-2026-v1",
+        "versionNumber": "v1",
+        "noticeId": "not-lib-2026",
+        "publishedAt": "2026-09-01T09:00:00.000Z",
+        "effectiveFrom": "2026-09-05T08:00:00.000Z",
+        "status": "ARCHIVED",
+        "changesSummary": "Standard semester library operating hours.",
+        "content": "CIRCULAR NO. LIB/2026/14\n\nThe Central Library announces standard operational hours for the Fall Academic Semester:\n\n- Monday through Friday: 08:00 AM – 08:00 PM\n- Saturdays & Sundays: CLOSED\n- Book Circulation Desk: Closes at 07:00 PM daily\n- Digital Archive Terminals: Available during building hours\n\nQuiet zones strictly enforced on Floors 2 and 3. Food and open beverages are prohibited.",
+        "signatory": "Prof. Elena Vance, Chief University Librarian",
+        "documentRef": "CCU-LIB-2026-014-V1",
+        "documentImage": "/documents/library_hours_v1.svg"
+      },
+      {
+        "id": "not-lib-2026-v2",
+        "versionNumber": "v2",
+        "noticeId": "not-lib-2026",
+        "publishedAt": "2026-10-02T11:00:00.000Z",
+        "effectiveFrom": "2026-10-05T07:00:00.000Z",
+        "status": "CURRENT",
+        "changesSummary": "Extended weekday evening closing by 3 hours (until 11:00 PM) and opened weekend study access to support upcoming exams.",
+        "content": "NOTIFICATION NO. LIB/2026/14-EXT\n\nIn response to student requests ahead of End Semester Examinations, the Central Library will operate on extended hours effective Monday, October 05, 2026 through the end of exam week.\n\nRevised Operational Hours:\n- Monday through Friday: 07:00 AM – 11:00 PM (Extended by 3 hours)\n- Saturdays & Sundays: 09:00 AM – 05:00 PM (Weekend Access Now Open)\n- 24/7 Overnight Reading Room: Ground Floor Annex available with University ID scan\n\nCirculation desks close at 08:30 PM. Overnight access requires active biometric or smartcard badge verification.",
+        "signatory": "Prof. Elena Vance, Chief University Librarian",
+        "documentRef": "CCU-LIB-2026-014-V2",
+        "documentImage": "/documents/library_hours_v2.svg"
+      }
+    ]
+  },
+  {
+    "id": "not-id-2026",
+    "title": "Annual Student Identity Card Validation & Campus Pass Renewal",
+    "department": "Office of the Registrar",
+    "organization": "City Central University",
+    "description": "Mandatory smartcard re-validation, gate biometric sync, and library barcode activation for all continuing students.",
+    "currentVersionId": "not-id-2026-v1",
+    "createdAt": "2026-10-10T10:00:00.000Z",
+    "updatedAt": "2026-10-10T10:00:00.000Z",
+    "versions": [
+      {
+        "id": "not-id-2026-v1",
+        "versionNumber": "v1",
+        "noticeId": "not-id-2026",
+        "publishedAt": "2026-10-10T10:00:00.000Z",
+        "effectiveFrom": "2026-11-01T09:00:00.000Z",
+        "status": "CURRENT",
+        "changesSummary": "Official notice for Annual Student ID Card Validation and security pass update for Academic Year 2026-27.",
+        "content": "REGISTRAR DIRECTIVE NO. REG/ID/2026-44\n\nAll continuing Undergraduate and Postgraduate students must renew their physical Student Identity Cards between November 01 and November 20, 2026.\n\nRenewal Procedures:\n1. Verify clearance of semester tuition balance via the Student Finance portal.\n2. Present existing physical ID card at Counter 4, Registrar's Hall, Administrative Wing.\n3. Operational Window: 09:30 AM – 04:00 PM on official university working days.\n\nUnvalidated ID cards will be deactivated at turnstile gates and library RFID readers starting November 25, 2026. Replacement for physically lost or mutilated cards requires Form ID-9 with administrative fee.",
+        "signatory": "Marcus Sterling, Registrar & Secretary to Academic Council",
+        "documentRef": "CCU-REG-2026-044-V1",
+        "documentImage": "/documents/id_card_renewal_v1.svg"
+      }
+    ]
+  }
+]

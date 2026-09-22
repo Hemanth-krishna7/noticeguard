@@ -60,50 +60,60 @@ NoticeGuard is structured around two distinct operational pillars:
 
 ## 4. Milestone Status
 
-NoticeGuard has completed **Milestone 2: Public Notice Input Experience**.
+NoticeGuard has completed **Milestone 3: Minimal Authoritative Notice Registry**.
 
-### Supported Notice Input Pathways:
-1. **Phone / Tablet Camera**:
-   - Native browser MediaDevices API (`navigator.mediaDevices.getUserMedia`).
-   - Prioritizes the environment/rear camera on mobile devices (`facingMode: { ideal: "environment" }`).
-   - Live video preview embedded in a document-oriented viewfinder frame with alignment guides and ambient lighting guidance.
-   - High-resolution frame snapshot via HTML5 Canvas.
-   - Graceful camera permission denial and unsupported device handling with instant photo gallery fallback.
-   - Complete stream teardown (`track.stop()`) on component unmount or mode switch.
-2. **Mobile Photo Gallery**:
-   - Seamless access to device photo library for pre-taken notice photos.
-3. **Desktop File Upload**:
-   - Drag-and-drop dropzone with visual drag-over states.
-   - Keyboard accessible file picker (`tabIndex={0}`, responds to `Enter` and `Space`).
-   - Format hints (`JPG, PNG, WEBP up to 15MB`).
+### Authoritative Notice Registry Purpose:
+Physical printed notices on walls inevitably go stale or get modified. To determine whether a photographed physical copy corresponds to official digital truth, the system requires an authoritative source of truth.
 
-### Unified Image Normalization Architecture:
-All three input pathways feed into a unified client-side abstraction (`NormalizedNoticeImage`):
-```javascript
-{
-  id: string,                 // Unique client session ID
-  file: File | Blob,          // Raw image payload
-  previewUrl: string,         // Object URL for memory-safe preview
-  source: 'camera' | 'gallery' | 'upload',
-  name: string,               // Filename or timestamped label
-  sizeBytes: number,          // Payload size in bytes
-  mimeType: string,           // image/jpeg, image/png, image/webp
-  width: number,              // Natural pixel width
-  height: number,             // Natural pixel height
-  timestamp: number           // Capture timestamp
-}
-```
-All Object URLs are memory-safe and systematically revoked (`URL.revokeObjectURL`) upon retake, replacement, or component unmount.
+In Milestone 3, NoticeGuard introduces the backend registry and data model holding official organizational notices and their complete version histories.
 
-### Privacy & Local Processing:
-- **100% Client-Side in Milestone 2**: Notice photos remain strictly within the user's browser memory. No images are transmitted or uploaded to the backend server.
+### Data Model (`backend/data/notices.json`):
+Each **Notice** contains:
+- `id`: Unique identifier (e.g. `not-exam-2026`)
+- `title`: Official notice headline
+- `department`: Issuing sector / department
+- `organization`: Issuing institution name
+- `description`: Contextual synopsis
+- `currentVersionId`: Pointer to the active official version
+- `versions`: Complete chronological array of version snapshots
 
-### What is Intentionally NOT Implemented in Milestone 2:
+Each **Version** snapshot contains:
+- `id`: Version identifier (e.g. `not-exam-2026-v2`)
+- `versionNumber`: Human-readable tag (`v1`, `v2`, etc.)
+- `noticeId`: Parent notice reference
+- `publishedAt`: ISO publication timestamp
+- `effectiveFrom`: ISO effective validity timestamp
+- `status`: Lifecycle state (`CURRENT` or `ARCHIVED`)
+- `changesSummary`: Plain-language explanation of revisions
+- `content`: Official authoritative notice text
+- `signatory`: Authorized institutional official
+- `documentRef`: Official circular/archive reference number
+- `documentImage`: Authoritative visual document reference
+
+### Seeded Demonstration Notices:
+1. **End Semester Examination Schedule & Venue Relocation** (`Controller of Examinations`):
+   - `v1` (**ARCHIVED**): Initial exam date (Oct 12) in Hall 302.
+   - `v2` (**CURRENT**): Exam rescheduled to Oct 15 and relocated to Hall 408 (Annex Wing) due to emergency electrical upgrades.
+2. **Central Library Extended Reading Room Hours** (`Library & Information Services`):
+   - `v1` (**ARCHIVED**): Standard hours (Mon-Fri 8 AM - 8 PM, weekends closed).
+   - `v2` (**CURRENT**): Extended hours (Mon-Fri 7 AM - 11 PM, weekends 9 AM - 5 PM) for exam preparation.
+3. **Annual Student Identity Card Validation & Campus Pass Renewal** (`Office of the Registrar`):
+   - `v1` (**CURRENT**): Smartcard re-validation window at Counter 4, Administrative Wing.
+
+### Organization Portal Features:
+- **Sector/Department Filter**: Real-time filtering across university departments.
+- **Master Registry List**: Live query from `GET /api/notices` showing active revision tags and version counts.
+- **Version History Lineage**: Interactive timeline displaying the evolution of each notice (`v1 — Archived` ──► `v2 — Current`).
+- **Changes Summary Callout**: Explicit explanation of why a newer version superseded an older one.
+- **Authoritative Document Sheet**: Rendered official letterhead notice simulating the printed physical record.
+
+### What is Intentionally NOT Implemented in Milestone 3:
 - OCR text extraction
-- Machine learning / AI document matching
-- Simulated verification outcomes (`CURRENT` / `OUTDATED` / `MODIFIED` / `UNVERIFIED`)
-- Backend image upload or cloud storage
-- Database persistence or administrative notice publishing
+- Image-to-document matching algorithms
+- Automated verification or diff comparison from uploaded photos
+- Organization user authentication or login
+- Production third-party database (PostgreSQL/MongoDB)
+- Administrative notice editing or publishing tools
 
 ---
 
@@ -208,11 +218,10 @@ NoticeGuard/
 
 ---
 
-## 8. Backend Health Endpoint
+## 8. Backend API Endpoints
 
-`GET /api/health`
-
-### Example Response:
+### System Health
+- **`GET /api/health`**: General server operational check.
 ```json
 {
   "status": "ok",
@@ -224,7 +233,11 @@ NoticeGuard/
 }
 ```
 
-The frontend application automatically pings this endpoint on mount and displays a subtle indicator (`API Online`) in the navigation bar.
+### Authoritative Registry Endpoints
+- **`GET /api/registry/health`**: Summary statistics of the authoritative notice registry (total notices, version count, active departments).
+- **`GET /api/notices`**: Returns all official notices in the registry. Supports optional query filtering: `?department=Controller%20of%20Examinations`.
+- **`GET /api/notices/:noticeId`**: Returns single notice record with complete version history.
+- **`GET /api/notices/:noticeId/versions/:versionId`**: Returns a specific version snapshot within a notice.
 
 ---
 

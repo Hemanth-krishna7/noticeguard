@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Shell } from './components/layout/Shell';
 import { LandingPage } from './pages/LandingPage';
 import { VerifyNoticePage } from './pages/VerifyNoticePage';
-import { AdminPlaceholderPage } from './pages/AdminPlaceholderPage';
+import { OrganizationPortalPage } from './pages/OrganizationPortalPage';
 
 /**
  * NoticeGuard Root Application Component
@@ -49,7 +49,7 @@ export default function App() {
     <Shell currentRoute={route} onNavigate={handleNavigate}>
       {route === 'landing' && <LandingPage onNavigate={handleNavigate} />}
       {route === 'verify' && <VerifyNoticePage onNavigate={handleNavigate} />}
-      {route === 'admin-preview' && <AdminPlaceholderPage onNavigate={handleNavigate} />}
+      {route === 'admin-preview' && <OrganizationPortalPage onNavigate={handleNavigate} />}
     </Shell>
   );
 }
