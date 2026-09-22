@@ -1,0 +1,19 @@
+{
+  "name": "noticeguard-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "NoticeGuard - Bridging the gap between physical printed notices and official digital truth.",
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "install:all": "npm --prefix backend install && npm --prefix frontend install"
+  },
+  "keywords": [
+    "noticeguard",
+    "verification",
+    "physical-to-digital",
+    "hackathon"
+  ],
+  "author": "",
+  "license": "ISC"
+}
