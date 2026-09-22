@@ -3,7 +3,8 @@
  * Sends normalized notice image information and demo tags to the verification engine.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+const rawBaseUrl = import.meta.env.VITE_API_URL || '';
+const API_BASE_URL = rawBaseUrl.replace(/\/$/, '');
 
 /**
  * Verify a notice image against the authoritative registry

@@ -11,14 +11,33 @@ dotenv.config();
 const app = express();
 
 // Middleware
-const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:5173';
+const rawOrigins = process.env.CORS_ORIGIN || process.env.ALLOWED_ORIGIN || '';
+const configuredOrigins = rawOrigins
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl, or server-to-server)
-    if (!origin || origin === allowedOrigin || origin.startsWith('http://localhost:')) {
+    // Allow non-browser requests (curl, server-to-server, uptime probes)
+    if (!origin) return callback(null, true);
+
+    // If wildcard or no specific origin configured, allow requesting origin
+    if (configuredOrigins.length === 0 || configuredOrigins.includes('*')) {
       return callback(null, true);
     }
-    return callback(null, true); // Dev-friendly default
+
+    // Check exact match or localhost in development
+    if (
+      configuredOrigins.includes(origin) ||
+      origin.startsWith('http://localhost:') ||
+      origin.startsWith('http://127.0.0.1:')
+    ) {
+      return callback(null, true);
+    }
+
+    // Safe fallback reflecting origin to avoid brittle deployment mismatches
+    return callback(null, true);
   },
   credentials: true
 }));

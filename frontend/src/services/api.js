@@ -3,7 +3,8 @@
  * Used for system health check and future backend communication.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+const rawBaseUrl = import.meta.env.VITE_API_URL || '';
+const API_BASE_URL = rawBaseUrl.replace(/\/$/, '');
 
 export async function checkBackendHealth() {
   try {

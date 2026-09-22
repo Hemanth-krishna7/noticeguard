@@ -3,7 +3,8 @@
  * Fetches authoritative notices, version lineages, and registry stats from the backend.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+const rawBaseUrl = import.meta.env.VITE_API_URL || '';
+const API_BASE_URL = rawBaseUrl.replace(/\/$/, '');
 
 /**
  * Fetch all notices, with optional department filter
