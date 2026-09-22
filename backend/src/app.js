@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import healthRoutes from './routes/health.routes.js';
 import noticeRoutes from './routes/notice.routes.js';
 import registryRoutes from './routes/registry.routes.js';
+import verificationRoutes from './routes/verification.routes.js';
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ app.use((req, res, next) => {
 app.use('/api/health', healthRoutes);
 app.use('/api/notices', noticeRoutes);
 app.use('/api/registry', registryRoutes);
+app.use('/api/verify', verificationRoutes);
 
 // 404 Handler
 app.use((req, res) => {

@@ -6,7 +6,8 @@ import {
   Camera,
   Upload,
   Image as ImageIcon,
-  CheckCircle2
+  CheckCircle2,
+  RefreshCw
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
@@ -19,6 +20,7 @@ import { formatBytes } from '../../utils/imageInput';
  */
 export function ImagePreview({
   image,
+  isVerifying = false,
   onRetake,
   onRemove,
   onContinue
@@ -109,12 +111,13 @@ export function ImagePreview({
             type="button"
             variant="accent"
             size="md"
+            disabled={isVerifying}
             onClick={onContinue}
-            icon={ArrowRight}
-            iconPosition="right"
-            className="w-full sm:w-auto"
+            icon={isVerifying ? RefreshCw : ArrowRight}
+            iconPosition={isVerifying ? 'left' : 'right'}
+            className={`w-full sm:w-auto font-semibold ${isVerifying ? 'opacity-80' : ''}`}
           >
-            Continue to Verify
+            {isVerifying ? 'Verifying Notice...' : 'Verify Notice'}
           </Button>
         </div>
       </Card>

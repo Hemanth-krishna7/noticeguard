@@ -60,60 +60,51 @@ NoticeGuard is structured around two distinct operational pillars:
 
 ## 4. Milestone Status
 
-NoticeGuard has completed **Milestone 3: Minimal Authoritative Notice Registry**.
+NoticeGuard has completed **Milestone 4: Minimal Document Verification Engine**.
 
-### Authoritative Notice Registry Purpose:
-Physical printed notices on walls inevitably go stale or get modified. To determine whether a photographed physical copy corresponds to official digital truth, the system requires an authoritative source of truth.
+### Document Verification Engine Purpose:
+Milestone 4 connects the public input experience (`#/verify`) with the authoritative notice registry (`backend/data/notices.json`) to create a working end-to-end verification demonstration.
 
-In Milestone 3, NoticeGuard introduces the backend registry and data model holding official organizational notices and their complete version histories.
+When a citizen, student, or visitor encounters a physical notice pinned to a board, they capture or upload a photo. NoticeGuard evaluates the document against the authoritative digital registry and deterministically resolves one of four official outcome states:
 
-### Data Model (`backend/data/notices.json`):
-Each **Notice** contains:
-- `id`: Unique identifier (e.g. `not-exam-2026`)
-- `title`: Official notice headline
-- `department`: Issuing sector / department
-- `organization`: Issuing institution name
-- `description`: Contextual synopsis
-- `currentVersionId`: Pointer to the active official version
-- `versions`: Complete chronological array of version snapshots
+1. **`OUTDATED`** (Primary Demo Pathway — Fall 2026 Examination Schedule):
+   - Notice matches an older authoritative record (`v1`, ARCHIVED).
+   - Clear visual comparison: `v1 (Archived)` vs `v2 (Current)`.
+   - Structured diff highlights changes:
+     - **Date**: Monday, October 12, 2026 ➔ Thursday, October 15, 2026
+     - **Timing**: 08:30 AM (Exam: 09:00 AM) ➔ 10:00 AM (Exam: 10:30 AM)
+     - **Venue**: Hall 302, Main Block ➔ Hall 408, Science & Technology Annex Wing
+     - **Reason**: Emergency electrical infrastructure upgrades
+   - Interactive **"View Latest Official Notice"** button opens the digital authoritative record sheet modal.
 
-Each **Version** snapshot contains:
-- `id`: Version identifier (e.g. `not-exam-2026-v2`)
-- `versionNumber`: Human-readable tag (`v1`, `v2`, etc.)
-- `noticeId`: Parent notice reference
-- `publishedAt`: ISO publication timestamp
-- `effectiveFrom`: ISO effective validity timestamp
-- `status`: Lifecycle state (`CURRENT` or `ARCHIVED`)
-- `changesSummary`: Plain-language explanation of revisions
-- `content`: Official authoritative notice text
-- `signatory`: Authorized institutional official
-- `documentRef`: Official circular/archive reference number
-- `documentImage`: Authoritative visual document reference
+2. **`CURRENT`** (Verified Active Document):
+   - Document matches the active official version in the registry (`v2`, CURRENT).
+   - Confirms the document is safe to rely on, displaying effective date and registry reference.
 
-### Seeded Demonstration Notices:
-1. **End Semester Examination Schedule & Venue Relocation** (`Controller of Examinations`):
-   - `v1` (**ARCHIVED**): Initial exam date (Oct 12) in Hall 302.
-   - `v2` (**CURRENT**): Exam rescheduled to Oct 15 and relocated to Hall 408 (Annex Wing) due to emergency electrical upgrades.
-2. **Central Library Extended Reading Room Hours** (`Library & Information Services`):
-   - `v1` (**ARCHIVED**): Standard hours (Mon-Fri 8 AM - 8 PM, weekends closed).
-   - `v2` (**CURRENT**): Extended hours (Mon-Fri 7 AM - 11 PM, weekends 9 AM - 5 PM) for exam preparation.
-3. **Annual Student Identity Card Validation & Campus Pass Renewal** (`Office of the Registrar`):
-   - `v1` (**CURRENT**): Smartcard re-validation window at Counter 4, Administrative Wing.
+3. **`MODIFIED`** (Content Discrepancy Detected):
+   - Notice corresponds to a known official topic, but key parameters (dates, venues, times) diverge from official records.
+   - Objective, professional phrasing strictly avoids accusatory language ("fake", "forged", "fraudulent").
+   - Explains the discrepancy and directs the user to the official authoritative digital notice.
 
-### Organization Portal Features:
-- **Sector/Department Filter**: Real-time filtering across university departments.
-- **Master Registry List**: Live query from `GET /api/notices` showing active revision tags and version counts.
-- **Version History Lineage**: Interactive timeline displaying the evolution of each notice (`v1 — Archived` ──► `v2 — Current`).
-- **Changes Summary Callout**: Explicit explanation of why a newer version superseded an older one.
-- **Authoritative Document Sheet**: Rendered official letterhead notice simulating the printed physical record.
+4. **`UNVERIFIED`** (Unindexed / Low Confidence):
+   - Unrecognized document not indexed in the current prototype registry.
+   - Embodies the NoticeGuard trust principle: **refuses to hallucinate verification**.
+   - Provides plain-language guidance to retry with better framing or consult the issuing authority.
 
-### What is Intentionally NOT Implemented in Milestone 3:
-- OCR text extraction
-- Image-to-document matching algorithms
-- Automated verification or diff comparison from uploaded photos
-- Organization user authentication or login
-- Production third-party database (PostgreSQL/MongoDB)
-- Administrative notice editing or publishing tools
+### Verification Demo Presets:
+To facilitate rapid hackathon evaluation without requiring custom image uploads, the Verify Notice screen includes **4 interactive sample notice presets**:
+- **Sample 1**: Outdated Exam Schedule (`v1` — Oct 12, Hall 302)
+- **Sample 2**: Current Exam Schedule (`v2` — Oct 15, Hall 408)
+- **Sample 3**: Altered Flyer (Discrepancy detected)
+- **Sample 4**: Unindexed Community Flyer (Refusal to guess)
+
+### What is Intentionally NOT Implemented in Milestone 4:
+- Complex OCR / machine vision pipelines
+- LLMs or external third-party AI APIs
+- Production databases (PostgreSQL/MongoDB)
+- User authentication or RBAC
+- Cloud file storage or analytics tracking
+- Push notifications or alerting systems
 
 ---
 
@@ -236,8 +227,33 @@ NoticeGuard/
 ### Authoritative Registry Endpoints
 - **`GET /api/registry/health`**: Summary statistics of the authoritative notice registry (total notices, version count, active departments).
 - **`GET /api/notices`**: Returns all official notices in the registry. Supports optional query filtering: `?department=Controller%20of%20Examinations`.
-- **`GET /api/notices/:noticeId`**: Returns single notice record with complete version history.
-- **`GET /api/notices/:noticeId/versions/:versionId`**: Returns a specific version snapshot within a notice.
+### Verification Engine Endpoint
+- **`POST /api/verify`**: Evaluates submitted document metadata/image against the authoritative registry.
+  - Request body: `{ "imageName": "exam_schedule_v1.jpg", "demoNoticeTag": "not-exam-2026-v1", "source": "upload" }`
+  - Returns structured verification result:
+    ```json
+    {
+      "success": true,
+      "matched": true,
+      "status": "OUTDATED",
+      "confidence": "DEMO_CONFIRMED",
+      "notice": {
+        "id": "not-exam-2026",
+        "title": "End Semester Examination Schedule & Venue Relocation",
+        "department": "Controller of Examinations"
+      },
+      "identifiedVersion": { "versionNumber": "v1", "status": "ARCHIVED" },
+      "currentVersion": { "versionNumber": "v2", "status": "CURRENT" },
+      "changes": [
+        {
+          "field": "Examination Date",
+          "from": "Monday, October 12, 2026",
+          "to": "Thursday, October 15, 2026",
+          "critical": true
+        }
+      ]
+    }
+    ```
 
 ---
 
@@ -253,9 +269,10 @@ npm run build   # Production Vite bundle
 
 ---
 
-## 10. Future Milestones Roadmap
+## 10. Milestones & Roadmap
 
-- **Milestone 2**: Phone Camera Integration & Optical Text Processing (WebRTC camera stream, client-side bounding box detection, and notice alignment guide).
-- **Milestone 3**: Authoritative Notice Registry & Database Persistence (PostgreSQL/SQLite schemas for organizations, departments, notices, and version trees).
-- **Milestone 4**: Verification Engine & Difference Analysis (Levenshtein/embedding matching, status resolution `CURRENT` / `OUTDATED` / `MODIFIED` / `UNVERIFIED`, and visual side-by-side diffing).
-- **Milestone 5**: Organization Publishing Console & Version Publishing (Authentication, document upload, markdown/PDF parsing, and notice lifecycle management).
+- [x] **Milestone 1**: Foundation & Product Shell (Visual design system, navigation, status indicators).
+- [x] **Milestone 2**: Public Notice Input Experience (Camera viewfinder, gallery selection, desktop upload, normalized image model).
+- [x] **Milestone 3**: Minimal Authoritative Notice Registry (JSON file repository, versions, changes summaries, organization portal).
+- [x] **Milestone 4**: Minimal Document Verification Engine (Deterministic matcher, OUTDATED/CURRENT/MODIFIED/UNVERIFIED states, structured diffs, "View Latest Notice" sheet).
+- [ ] **Milestone 5**: Organization Publishing Console & Authentication (Notice authoring, version publishing, revocation).
