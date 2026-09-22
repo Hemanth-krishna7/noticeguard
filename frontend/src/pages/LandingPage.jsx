@@ -114,14 +114,14 @@ export function LandingPage({ onNavigate }) {
                       Midterm Examination Schedule: Hall 302
                     </p>
                     <p className="text-stone-500 line-through">
-                      Date: Friday, Oct 12 • Time: 09:00 AM • Venue: Hall 302
+                      Date: Monday, Oct 12 • Time: 09:00 AM • Venue: Hall 302
                     </p>
                   </div>
                   <div className="pt-2 flex items-center justify-between">
                     <span className="text-[11px] text-amber-700 font-medium bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded">
                       Physical copy is obsolete
                     </span>
-                    <span className="text-[11px] text-stone-500">Notice ID #NG-8491</span>
+                    <span className="text-[11px] text-stone-500">Notice ID #not-exam-2026</span>
                   </div>
                 </div>
 
@@ -330,9 +330,6 @@ export function LandingPage({ onNavigate }) {
             <p className="mt-2 text-stone-600 text-xs sm:text-sm">
               Visual specification of the eventual verification states. Each status provides clarity without ambiguity.
             </p>
-            <div className="mt-3 inline-block bg-stone-100 border border-stone-200/90 px-3 py-1 rounded text-[11px] text-stone-600">
-              Note: Conceptual UI specification for Milestone 1. Live matching engine is in future milestones.
-            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

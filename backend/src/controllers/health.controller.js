@@ -7,7 +7,6 @@ export const getHealth = (req, res) => {
     status: 'ok',
     service: 'noticeguard-api',
     version: '0.1.0',
-    milestone: 'Milestone 1: Foundation & Shell',
     timestamp: new Date().toISOString(),
     uptime: process.uptime()
   });
